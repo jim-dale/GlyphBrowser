@@ -76,26 +76,19 @@ namespace GlyphBrowser
             uint width = (uint)renderTargetBitmap.PixelWidth;
             uint height = (uint)renderTargetBitmap.PixelHeight;
             var pixels = await renderTargetBitmap.GetPixelsAsync();
+            byte[] bytes = pixels.ToArray();
 
             var displayInformation = Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
             float dpiX = displayInformation.LogicalDpi;
             float dpiY = displayInformation.LogicalDpi;
 
-            BitmapTransform transform = new BitmapTransform();
-            BitmapBounds bounds = new BitmapBounds();
-            bounds.X = 0;
-            bounds.Y = 0;
-            bounds.Width = (uint)GlyphText.DesiredSize.Width;
-            bounds.Height = (uint)GlyphText.DesiredSize.Height;
-            transform.Bounds = bounds;
-
             StorageFolder pictureFolder = KnownFolders.PicturesLibrary;
 
-            StorageFile file = await pictureFolder.CreateFileAsync("GlyphBrowser.png", CreationCollisionOption.ReplaceExisting);
+            StorageFile file = await pictureFolder.CreateFileAsync("Glyph Image.png", CreationCollisionOption.GenerateUniqueName);
             using (var stream = await file.OpenStreamForWriteAsync())
             {
                 var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream.AsRandomAccessStream());
-                byte[] bytes = pixels.ToArray();
+
                 encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, width, height, dpiX, dpiY, bytes);
 
                 await encoder.FlushAsync();
