@@ -11,6 +11,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -55,7 +56,7 @@ namespace GlyphBrowser
                         ParseSetText(ParseText.Text);
                         break;
                     case "ClearBtn":
-                        ResetGlyphText(_defaultFontFamily);
+                        ResetGlyphText();
                         break;
                     case "SaveBtn":
                         await SaveGlyphTextAsImageAsync();
@@ -95,12 +96,6 @@ namespace GlyphBrowser
             }
         }
 
-        private void ParseSetText(string text)
-        {
-            string characters = Helpers.ParseUnicodeString(text);
-            AddCharacters(characters);
-        }
-
         private void GlyphText_DragOver(object sender, DragEventArgs e)
         {
             e.AcceptedOperation = DataPackageOperation.Copy;
@@ -120,6 +115,12 @@ namespace GlyphBrowser
             }
         }
 
+        private void ParseSetText(string text)
+        {
+            string characters = Helpers.ParseUnicodeString(text);
+            AddCharacters(characters);
+        }
+
         private async Task LoadGlyphTextFromFileAsync(StorageFile file)
         {
             if (file != null)
@@ -129,23 +130,32 @@ namespace GlyphBrowser
                 if (String.IsNullOrEmpty(text) == false)
                 {
                     string fontFamilyName = Helpers.GetFontFamilyName(file);
+                    FontStyle fontStyle = Helpers.GetFontStyle(file);
+                    FontWeight fontWeight = Helpers.GetFontWeight(file);
 
-                    SetText(text, fontFamilyName);
+                    SetText(text, fontFamilyName, fontStyle, fontWeight);
                 }
             }
         }
 
-        private void SetText(string text, string fontFamilyName)
+        private void SetText(string text, string fontFamilyName, FontStyle fontStyle, FontWeight fontWeight)
         {
-            ResetGlyphText(new FontFamily(fontFamilyName));
+            ResetGlyphText(new FontFamily(fontFamilyName), fontStyle, fontWeight);
 
             AddCharacters(text);
         }
 
-        private void ResetGlyphText(FontFamily fontFamily)
+        private void ResetGlyphText()
+        {
+            ResetGlyphText(_defaultFontFamily, FontStyle.Normal, FontWeights.Normal);
+        }
+
+        private void ResetGlyphText(FontFamily fontFamily, FontStyle fontStyle, FontWeight fontWeight)
         {
             GlyphText.Text = String.Empty;
             GlyphText.FontFamily = fontFamily;
+            GlyphText.FontStyle = fontStyle;
+            GlyphText.FontWeight = fontWeight;
         }
 
         private void AddCharacters(string str)

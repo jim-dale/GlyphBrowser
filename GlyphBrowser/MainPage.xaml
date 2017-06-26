@@ -13,7 +13,6 @@
             <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -26,6 +25,7 @@
                 <Button x:Name="SaveBtn" Content="Save" Click="Button_ClickAsync"/>
             </StackPanel>
         </Grid>
+
         <Slider Grid.Row="1" x:Name="FontSizeSlider" Minimum="10" Maximum="256" Value="10" />
         <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <!--<TextBox x:Name="GlyphText" FontFamily="Segoe UI Emoji" IsColorFontEnabled="True"
